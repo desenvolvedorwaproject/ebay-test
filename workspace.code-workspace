@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "server"
+		},
+		{
+			"path": "front"
+		},
+		{
+			"path": "worker-producer"
+		},
+		{
+			"path": "worker-consumer"
+		}
+	],
+	"settings": {}
+}

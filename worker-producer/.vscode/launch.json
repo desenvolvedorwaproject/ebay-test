@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [{
+    "type": "node",
+    "request": "attach",
+    "name": "Debug",
+    "address": "127.0.0.1",
+    "port": 3009,
+    "protocol": "inspector",
+    "restart": true,
+    "sourceMaps": true,
+    "localRoot": "${workspaceRoot}/src",
+    "remoteRoot": "/server/src",
+    "skipFiles": [
+      "${workspaceRoot}/node_modules/**/*.js",
+      "<node_internals>/**/*.js"
+    ]
+  }]
+}

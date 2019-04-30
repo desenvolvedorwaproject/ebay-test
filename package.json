@@ -1,0 +1,33 @@
+{
+  "name": "waproject-ebay",
+  "license": "MIT",
+  "scripts": {
+    "prestart": "yarn",
+    "start": "docker-compose up",
+    "pretest": "yarn",
+    "test": "(cd server && yarn test)",
+    "test:cov": "(cd server && yarn test:cov)",
+    "dev": "concurrently -k \"yarn dev:front\" \"yarn dev:server\" \"yarn dev:docker\" \"yarn dev:worker-producer\" \"yarn dev:worker-consumer\" -n \"FRONT,SERVER,DOCKER,WPROD,WCONS\" -c \"bgMagenta,bgBlue,bgRed,bgGreen,bgYellow\"",
+    "dev:front": "(cd front && yarn start)",
+    "dev:server": "(cd server && yarn start:dev)",
+    "dev:worker-producer": "(cd worker-producer && yarn start:dev)",
+    "dev:worker-consumer": "(cd worker-consumer && yarn start:dev)",
+    "dev:docker": "docker-compose -f docker-compose.dev.yml up",
+    "postinstall": "concurrently \"yarn install:front\" \"yarn install:server\" \"yarn install:worker-producer\" \"yarn install:worker-consumer\"",
+    "install:front": "(cd front && yarn install)",
+    "install:server": "(cd server && yarn install)",
+    "install:worker-producer": "(cd worker-producer && yarn install)",
+    "install:worker-consumer": "(cd worker-consumer && yarn install)",
+    "lint": "concurrently \"(cd server && yarn lint)\" \"(cd front && yarn lint)\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint",
+      "post-merge": "yarn"
+    }
+  },
+  "devDependencies": {
+    "concurrently": "4.1.0",
+    "husky": "1.3.1"
+  }
+}

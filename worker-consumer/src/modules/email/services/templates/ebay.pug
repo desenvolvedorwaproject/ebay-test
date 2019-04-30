@@ -1,0 +1,31 @@
+extends _base
+
+block content
+  style(type="text/css").
+    .image-product {
+      max-width: 50px;
+      max-height: 50px;
+      margin: 10px 10px 10px 0;
+      border-radius: 50%;
+      box-shadow: 0px 1px 3px #c3c3c3;
+    }
+
+  h2 EbaySearchTest
+  p.mui--text-subhead
+    | #{items.length} items found
+    br
+    | Search Phrase: #{phrase}
+    br
+    | Current Interval: #{interval} minutes)
+
+  table
+    each item in items
+      tr
+        td.mui--divider-top
+          img.image-product(src=item.imageUrl)
+        td.mui--divider-top
+          | #{item.title}
+        td.mui--divider-top
+          | #{item.price}
+        td.mui--divider-top
+          a.mui-btn.mui-btn--raised.mui-btn--primary(href=item.url, target="_blank") See

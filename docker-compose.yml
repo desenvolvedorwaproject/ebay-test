@@ -1,0 +1,97 @@
+version: '3'
+services:
+
+  server:
+    container_name: waproject-ebay-server
+    build:
+      context: ./server
+      dockerfile: docker/dev/Dockerfile
+    volumes:
+      - ./server:/server
+      - ./server/docker/dev/start.sh:/usr/local/bin/start.sh
+    ports:
+      - 3001:3001
+      - 3009:9229
+    environment:
+      - NODE_ENV=production
+      - MONGO_DSN=mongodb://mongodb:27017/ebay
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+    links:
+      - mongodb
+
+  front:
+    container_name: waproject-ebay-front
+    build:
+      context: ./front
+      dockerfile: docker/dev/Dockerfile
+    volumes:
+      - ./front:/front
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=production
+
+  worker-producer:
+    container_name: waproject-ebay-producer
+    build:
+      context: ./worker-producer
+      dockerfile: docker/dev/Dockerfile
+    volumes:
+      - ./worker-producer:/server
+      - ./worker-producer/docker/dev/start.sh:/usr/local/bin/start.sh
+    environment:
+      - NODE_ENV=production
+      - MONGO_DSN=mongodb://mongodb:27017/ebay
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - RABBIT_DSN=amqp://guest:guest@rabbitmq:5672
+      - RABBIT_QUEUE=emails
+    links:
+      - mongodb
+      - rabbitmq
+
+  worker-consumer:
+    container_name: waproject-ebay-worker-consumer
+    build:
+      context: ./worker-consumer
+      dockerfile: docker/dev/Dockerfile
+    volumes:
+      - ./worker-consumer:/server
+      - ./worker-consumer/docker/dev/start.sh:/usr/local/bin/start.sh
+    environment:
+      - NODE_ENV=production
+      - SITE_DNS=localhost:3000
+      - MONGO_DSN=mongodb://mongodb:27017/ebay
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - RABBIT_DSN=amqp://guest:guest@rabbitmq:5672
+      - RABBIT_QUEUE=emails
+      - RABBIT_EXCHANGE=exchange
+      - EBAY_KEY=DanielPr-E-PRD-af2fb35bc-c4a44b17
+      - MAILGUN_FROM=
+      - MAILGUN_APIKEY=
+      - MAILGUN_DOMAIN=
+    links:
+      - mongodb
+      - rabbitmq
+
+  mongodb:
+    container_name: waproject-ebay-mongo
+    image: mongo
+    container_name: mongodb
+    ports:
+      - 3003:27017
+    volumes:
+      - ./.docker-data/mongodb:/data/db
+
+  rabbitmq:
+    container_name: waproject-ebay-rabbit
+    image: rabbitmq:3.7-management
+    hostname: rabbitmq
+    volumes: 
+      - ./.docker-data/rabbitmq:/var/lib/rabbitmq
+    container_name: rabbitmq
+    ports:
+     - 15672:15672
+     - 5672:5672
